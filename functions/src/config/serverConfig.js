@@ -1,16 +1,18 @@
 // imports
 const express = require('express');
-// const favicon = require('express-favicon');
 const cors = require('cors');
-const http = require('http');
+const bodyParser = require('body-parser');
 const path = require('path');
-const WebSocket = require('ws');
 const logger = require('morgan');
+// const {firebaseApp} = require('./configProject');
 
 // create server
 const app = express();
-const server = http.createServer(app);
-const webSocketServer = new WebSocket.Server({ server });
+
+// db
+// const db = firebase.firestore();
+// const works = db.colections('works');
+// console.log(works);
 
 // settings
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -22,19 +24,19 @@ app.use(
         },
     })
 );
-
 const optionCors = {
     origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
     allowedHeaders: '*',
 };
-
 // add settings
 app.use(cors(optionCors));
-app.use(express.json());
-// app.use(
-//     favicon(path.join(__dirname, '..', '..', 'webApp', 'build', 'favicon.png'))
-// );
-app.use(express.static(path.join(__dirname, '..', '..', 'webApp', 'build')));
+app.use(bodyParser.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+);
+app.use('/avatar', express.static(path.join(__dirname, '..', 'photo'))); // localhost:5000/photoName.png;
 
-module.exports = { app, webSocketServer, server };
+module.exports = { app };
